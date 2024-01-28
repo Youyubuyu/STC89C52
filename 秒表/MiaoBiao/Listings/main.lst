@@ -1,0 +1,128 @@
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 19:23:41 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Timer0.h"
+   3          #include "Key.h"
+   4          #include "Delay.h"
+   5          #include "Nixie.h"
+   6          #include "AT24C02.h"
+   7          
+   8          unsigned char KeyNum;
+   9          unsigned char Min, Sec, MiniSec;
+  10          unsigned char RunFlag;
+  11          
+  12          void main()
+  13          {
+  14   1        Timer0_Init();
+  15   1        while(1)
+  16   1        {
+  17   2          KeyNum = Key();
+  18   2          if(KeyNum == 1)
+  19   2          {
+  20   3            RunFlag =! RunFlag;
+  21   3          }
+  22   2          
+  23   2          if(KeyNum == 2)
+  24   2          {
+  25   3            Min = 0;
+  26   3            Sec = 0;
+  27   3            MiniSec = 0;
+  28   3          }
+  29   2          
+  30   2          if(KeyNum == 3)
+  31   2          {
+  32   3            AT24C02_WriteByte(0,Min);
+  33   3            Delay(5);
+  34   3            AT24C02_WriteByte(1,Sec);
+  35   3            Delay(5);
+  36   3            AT24C02_WriteByte(2,MiniSec);
+  37   3            Delay(5);
+  38   3          }
+  39   2          
+  40   2          if(KeyNum == 4)
+  41   2          {
+  42   3            Min = AT24C02_ReadByte(0);
+  43   3            Sec = AT24C02_ReadByte(1);
+  44   3            MiniSec = AT24C02_ReadByte(2);
+  45   3          }
+  46   2          Nixie_SetBuf(1, Min / 10);
+  47   2          Nixie_SetBuf(2, Min % 10);
+  48   2          Nixie_SetBuf(3, 11);
+  49   2          Nixie_SetBuf(4, Sec / 10);
+  50   2          Nixie_SetBuf(5, Sec % 10);
+  51   2          Nixie_SetBuf(6, 11);
+  52   2          Nixie_SetBuf(7, MiniSec / 10);
+  53   2          Nixie_SetBuf(8, MiniSec % 10);
+  54   2        }
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 19:23:41 PAGE 2   
+
+  55   1      }
+  56          
+  57          void Sec_Loop()
+  58          {
+  59   1        if(RunFlag)
+  60   1        {
+  61   2          MiniSec++;
+  62   2          if(MiniSec >= 100)
+  63   2          {
+  64   3            MiniSec = 0;
+  65   3            Sec++;
+  66   3            if(Sec >= 60)
+  67   3            {
+  68   4              Sec = 0;
+  69   4              Min++;
+  70   4              if(Min >= 60)
+  71   4              {
+  72   5                Min = 0;
+  73   5              }
+  74   4            }
+  75   3          }
+  76   2        }
+  77   1      }
+  78          
+  79          void Timer0_Routine() interrupt 1
+  80          {
+  81   1        static unsigned int T0Count1, T0Count2, T0Count3;
+  82   1        TL0 = 0x18;       //设置定时初值
+  83   1        TH0 = 0xFC;       //设置定时初值
+  84   1        T0Count1++;
+  85   1        if(T0Count1 >= 20)
+  86   1        {
+  87   2          T0Count1 = 0;
+  88   2          Key_Loop();
+  89   2        }
+  90   1        T0Count2++;
+  91   1        if(T0Count2 >= 2)
+  92   1        {
+  93   2          T0Count2 = 0;
+  94   2          Nixie_Loop();
+  95   2        }
+  96   1        T0Count3++;
+  97   1        if(T0Count3 >= 10)
+  98   1        {
+  99   2          T0Count3 = 0;
+ 100   2          Sec_Loop();
+ 101   2        }
+ 102   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    410    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     11    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

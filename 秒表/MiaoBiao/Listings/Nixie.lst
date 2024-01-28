@@ -1,0 +1,59 @@
+C51 COMPILER V9.54   NIXIE                                                                 01/28/2024 18:41:09 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE NIXIE
+OBJECT MODULE PLACED IN .\Objects\Nixie.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE Nixie.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Nixie
+                    -.lst) TABS(2) OBJECT(.\Objects\Nixie.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          unsigned char Nixie_Buf[9]={0,10,10,10,10,10,10,10,10};
+   5          unsigned char NixieTable[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F,0x00,0x40};
+   6          
+   7          void Nixie_SetBuf(unsigned char Location,Number)
+   8          {
+   9   1        Nixie_Buf[Location] = Number;
+  10   1      }
+  11          
+  12          void Nixie_Scan(unsigned char Location,Number)
+  13          {
+  14   1        P0=0x00;
+  15   1        switch(Location)
+  16   1        {   
+  17   2          case 1:P2_4=1;P2_3=1;P2_2=1;break;
+  18   2          case 2:P2_4=1;P2_3=1;P2_2=0;break;
+  19   2          case 3:P2_4=1;P2_3=0;P2_2=1;break;
+  20   2          case 4:P2_4=1;P2_3=0;P2_2=0;break;
+  21   2          case 5:P2_4=0;P2_3=1;P2_2=1;break;
+  22   2          case 6:P2_4=0;P2_3=1;P2_2=0;break;
+  23   2          case 7:P2_4=0;P2_3=0;P2_2=1;break;
+  24   2          case 8:P2_4=0;P2_3=0;P2_2=0;break;
+  25   2        }
+  26   1        P0=NixieTable[Number];
+  27   1      }
+  28          
+  29          void Nixie_Loop(void)
+  30          {
+  31   1        static unsigned char i;
+  32   1        Nixie_Scan(i, Nixie_Buf[i]);
+  33   1        i++;
+  34   1        if(i > 8)i = 1;
+  35   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    138    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     22    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
