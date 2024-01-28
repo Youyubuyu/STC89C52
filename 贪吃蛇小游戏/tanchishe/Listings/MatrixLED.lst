@@ -1,0 +1,77 @@
+C51 COMPILER V9.54   MATRIXLED                                                             12/27/2023 17:13:19 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MATRIXLED
+OBJECT MODULE PLACED IN .\Objects\MatrixLED.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE MatrixLED.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\M
+                    -atrixLED.lst) TABS(2) OBJECT(.\Objects\MatrixLED.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          
+   4          sbit RCK=P3^5;  //RCLK
+   5          sbit SCK=P3^6;  //SRCLK
+   6          sbit SER=P3^4;  //SER
+   7          
+   8          #define MATRIX_LED_PORT P0
+   9          
+  10          /*
+  11          * 74HC595写入一个字节
+  12          * 参数：要写入的字节
+  13          */
+  14          
+  15          
+  16          void _74HC595_WriteByte(unsigned char Byte)
+  17          {
+  18   1        unsigned char i;
+  19   1        for(i=0;i<8;i++)
+  20   1        {
+  21   2        SER=Byte&(0x80>>i);
+  22   2        SCK=1;
+  23   2        SCK=0;
+  24   2        }
+  25   1        RCK=1;
+  26   1        RCK=0;
+  27   1      }
+  28          
+  29          /*
+  30          *点阵屏初始化
+  31          */
+  32          
+  33          void MatrixLED_Init()
+  34          {
+  35   1        SCK=0;
+  36   1        RCK=0;
+  37   1      }
+  38          
+  39          /*
+  40          * LED点阵屏显示一列数据
+  41          * 参数：Column 要选择的列，范围：0~7，0在最左边
+  42          *      Data 选择列显示的数据，高位在上，1为亮，0为灭
+  43          */
+  44          
+  45          void MatrixLED_ShowColumn(unsigned char Column, Data)
+  46          {
+  47   1        _74HC595_WriteByte(Data);
+  48   1        MATRIX_LED_PORT=~(0x80>>Column);
+  49   1        Delay(1);
+  50   1        MATRIX_LED_PORT=0xFF;
+  51   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V9.54   MATRIXLED                                                             12/27/2023 17:13:19 PAGE 2   
+
+   CODE SIZE        =     84    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

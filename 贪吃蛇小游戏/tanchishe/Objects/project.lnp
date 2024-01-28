@@ -1,0 +1,8 @@
+".\Objects\main.obj",
+".\Objects\MatrixLED.obj",
+".\Objects\Delay.obj",
+".\Objects\MatrixKey.obj",
+".\Objects\Timer0.obj" 
+TO ".\Objects\project" 
+PRINT(".\Listings\project.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 
