@@ -1,0 +1,258 @@
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 21:54:25 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          #include "Timer0.h"
+   4          
+   5          sbit Buzzer = P2^5;
+   6          
+   7          #define SPEED 500
+   8          
+   9          #define P0  0
+  10          #define L1  1
+  11          #define L1_ 2
+  12          #define L2  3
+  13          #define L2_ 4
+  14          #define L3  5
+  15          #define L4  6
+  16          #define L4_ 7
+  17          #define L5  8
+  18          #define L5_ 9
+  19          #define L6  10
+  20          #define L6_ 11
+  21          #define L7  12
+  22          #define M1  13
+  23          #define M1_ 14
+  24          #define M2  15
+  25          #define M2_ 16
+  26          #define M3  17
+  27          #define M4  18
+  28          #define M4_ 19
+  29          #define M5  20
+  30          #define M5_ 21
+  31          #define M6  22
+  32          #define M6_ 23
+  33          #define M7  24
+  34          #define H1  25
+  35          #define H1_ 26
+  36          #define H2  27
+  37          #define H2_ 28
+  38          #define H3  29
+  39          #define H4  30
+  40          #define H4_ 31
+  41          #define H5  32
+  42          #define H5_ 33
+  43          #define H6  34
+  44          #define H6_ 35
+  45          #define H7  36
+  46          #define SH1  37
+  47          #define SH1_ 38
+  48          #define SH2  39
+  49          #define SH2_ 40
+  50          #define SH3  41
+  51          #define SH4  42
+  52          #define SH4_ 43
+  53          #define SH5  44
+  54          #define SH5_ 45
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 21:54:25 PAGE 2   
+
+  55          #define SH6  46
+  56          #define SH6_ 47
+  57          #define SH7  48
+  58          
+  59          unsigned int FreqTable[] = {
+  60          0,
+  61          63628, 63731, 63835, 63928, 64021, 64103, 64185, 64260,
+  62          64331, 64400, 64463, 64524, 64580, 64633, 64684, 64732,
+  63          64777, 64820, 64860, 64898, 64934, 64968, 65000, 65030,
+  64          65058, 65085, 65110, 65134, 65157, 65178, 65198, 65217,
+  65          65235, 65252, 65268, 65283, 65297, 65310, 65323, 65335,
+  66          65346, 65357, 65367, 65377, 65385, 65394, 65402, 65409
+  67          };
+  68          
+  69          unsigned char code Music[] = {
+  70            //我们哭了
+  71            P0,2,
+  72            L5,2,
+  73            M1,2,
+  74            M2,2,
+  75            M1,8,
+  76            //我们笑着
+  77            P0,2,
+  78            M1,2,
+  79            M1,2,
+  80            M2,1,
+  81            M1,1,
+  82            M1,8,
+  83            //我们抬头望天空
+  84            P0,2,
+  85            M1,2,
+  86            M1,2,
+  87            M2,2,
+  88            M3,2,
+  89            M6,2,
+  90            M7,2,
+  91            H1,2,
+  92            //星星还亮着几颗
+  93            P0,2,
+  94            M6,2,
+  95            M6,2,
+  96            M5,2,
+  97            M5,2,
+  98            M3,2,
+  99            M1,2,
+ 100            M2,2,
+ 101            //我们唱着
+ 102            P0,2,
+ 103            L5,2,
+ 104            M1,2,
+ 105            M2,1,
+ 106            M1,1,
+ 107            M1,8,
+ 108            //时间的歌
+ 109            P0,2,
+ 110            M1,2,
+ 111            M1,3,
+ 112            M2,1,
+ 113            M3,8,
+ 114            //才懂得相互拥抱
+ 115            P0,2,
+ 116            L5,2,
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 21:54:25 PAGE 3   
+
+ 117            M1,2,
+ 118            M2,2,
+ 119            M3,2,
+ 120            M6,2,
+ 121            M7,2,
+ 122            H1,2,
+ 123            //到底是为了什么
+ 124            P0,2,
+ 125            M6,2,
+ 126            M6,2,
+ 127            M5,2,
+ 128            M5,2,
+ 129            M6,2,
+ 130            M3,2,
+ 131            M2,2,
+ 132            //因为我刚好遇见你
+ 133            P0,2,
+ 134            H1,2,
+ 135            H1,2,
+ 136            H1,2,
+ 137            H1,2,
+ 138            M6,2,
+ 139            SH1,2,
+ 140            H6,2,
+ 141            H6,4,
+ 142            //留下足迹才美丽
+ 143            H6,2,
+ 144            H5,2,
+ 145            H5,2,
+ 146            H3,2,
+ 147            H3,2,
+ 148            H1,2,
+ 149            H2,4,
+ 150            //风吹花落泪如雨
+ 151            H1,2,
+ 152            H1,2,
+ 153            H1,2,
+ 154            M6,2,
+ 155            SH1,2,
+ 156            SH2,2,
+ 157            SH1,4,
+ 158            //因为不想分离
+ 159            SH1,2,
+ 160            H6,2,
+ 161            P0,2,
+ 162            H5,2,
+ 163            H3,2,
+ 164            H5,2,
+ 165            H2,4,
+ 166            //因为刚好遇见你
+ 167            H1,2,
+ 168            M7,2,
+ 169            H1,2,
+ 170            M6,2,
+ 171            SH1,2,
+ 172            H6,2,
+ 173            H6,4,
+ 174            //留下十年的期许
+ 175            H6,2,
+ 176            H5,2,
+ 177            H5,2,
+ 178            H5,1,
+C51 COMPILER V9.54   MAIN                                                                  01/28/2024 21:54:25 PAGE 4   
+
+ 179            H6,1,
+ 180            H3,2,
+ 181            H5,2,
+ 182            H2,4,
+ 183            //如果再相遇
+ 184            H1,2,
+ 185            H2,2,
+ 186            H1,2,
+ 187            M7,1,
+ 188            H1,9,
+ 189            //我想我会记得你
+ 190            H1,2,
+ 191            H2,2,
+ 192            H3,2,
+ 193            H2,1,
+ 194            H1,3,
+ 195            M7,1,
+ 196            H1,9,
+ 197          };
+ 198          
+ 199          unsigned char FreqSelect, MusicSelect;
+ 200          
+ 201          void main()
+ 202          {
+ 203   1        Timer0_Init();
+ 204   1        while(1)
+ 205   1        {
+ 206   2          FreqSelect = Music[MusicSelect];
+ 207   2          MusicSelect++;
+ 208   2          Delay(SPEED / 4 * Music[MusicSelect]);
+ 209   2          MusicSelect++;
+ 210   2          TR0 = 0;
+ 211   2          Delay(5);
+ 212   2          TR0 = 1;
+ 213   2          if(MusicSelect > 221)
+ 214   2          {
+ 215   3            MusicSelect = 0;
+ 216   3          }
+ 217   2        }
+ 218   1      }
+ 219          
+ 220          void Timer0_Routine() interrupt 1
+ 221          {
+ 222   1        if(FreqTable[FreqSelect])
+ 223   1        {
+ 224   2        TL0 = FreqTable[FreqSelect] % 256;        //设置定时初值
+ 225   2        TH0 = FreqTable[FreqSelect] / 256;        //设置定时初值
+ 226   2        Buzzer =! Buzzer;
+ 227   2        }
+ 228   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    103    ----
+   CONSTANT SIZE    =    222    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =    100    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
